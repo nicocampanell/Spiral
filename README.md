@@ -1,6 +1,6 @@
 # Spiral
 
-Spiral is a Codex skill for taking a product idea from the first conversation to a working milestone.
+Spiral is a Codex skill for taking a product idea from the first conversation to a working milestone. Its eight agent roles cover product strategy, web and native mobile design, copy, frontend, backend, orchestration, and independent verification.
 
 ## Why I built it
 
@@ -29,7 +29,22 @@ flowchart TD
     Records -->|Context for the next run| Lead
 ```
 
-The lead chooses from product strategy, web design, native mobile design, product copy, frontend engineering, backend engineering, and independent verification. Role instructions set concrete expectations for accessible interactions, state and error coverage, readable code, and copy that preserves meaning. [Roles](skills/product-orchestrator/references/personas.md) · [Task playbooks](skills/product-orchestrator/references/task-playbooks.md) · [Evidence recipe](skills/product-orchestrator/references/verification-recipe.md)
+## The agents
+
+The main Codex chat normally leads. It calls the specialists needed for the work, agrees on shared interfaces before parallel implementation, and gives each edit a clear owner.
+
+| Agent | When it joins | What it delivers |
+| --- | --- | --- |
+| [Product orchestrator](skills/product-orchestrator/agents/product-orchestrator.toml) | A brief spans several disciplines or needs coordinated delivery | The agreed scope, acceptance criteria, task ownership, and working milestones for review |
+| [Product strategist](skills/product-orchestrator/agents/product-strategist.toml) | The audience, problem, or scope is still open | The core user journey, consequential tradeoffs, and testable criteria for the smallest complete release |
+| [Web designer](skills/product-orchestrator/agents/web-designer.toml) | A website or web app needs a direction, including responsive mobile web | Layout, hierarchy, responsive behavior, and accessible interaction states |
+| [Mobile designer](skills/product-orchestrator/agents/mobile-designer.toml) | A native iOS or Android flow needs design | Platform-specific navigation, gestures, safe areas, keyboard behavior, and accessibility states |
+| [Product copywriter](skills/product-orchestrator/agents/product-copywriter.toml) | A flow needs labels, instructions, or feedback people can act on | Exact copy for actions, errors, and recovery, with a Humanizer pass that preserves meaning and voice |
+| [Frontend engineer](skills/product-orchestrator/agents/frontend-engineer.toml) | Approved design and copy need to work in the client | Accessible interactions, loading and failure states, integration with the agreed API, and relevant tests |
+| [Backend engineer](skills/product-orchestrator/agents/backend-engineer.toml) | A change touches APIs, data, or infrastructure | A trace of the existing system, justified architecture decisions, and tested server behavior for validation, authorization, and persistence |
+| [Product verifier](skills/product-orchestrator/agents/product-verifier.toml) | A milestone is integrated or a repair is ready to check | An independent verdict for each criterion, tied to the artifact tested, with failures and missing evidence called out |
+
+The configured defaults use GPT-6.2 Astra for the orchestrator and verifier, and GPT-6.1 Terra for the other six roles where available. [Model routing](skills/product-orchestrator/references/model-routing.md) · [Task playbooks](skills/product-orchestrator/references/task-playbooks.md) · [Evidence recipe](skills/product-orchestrator/references/verification-recipe.md)
 
 ## Install
 
