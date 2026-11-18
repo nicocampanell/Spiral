@@ -1,0 +1,58 @@
+{
+  "skill_name": "product-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "name": "specialist-ownership",
+      "prompt": "Plan only: use a small multi-agent team to add a waitlist signup to an existing Node app. It needs an accessible frontend, clear success/error copy, and POST /api/waitlist with server validation. Available personas: product, design, copy, frontend, backend, verifier. Four agent slots total including you. Frontend and copy both asked to edit public/app.js, and backend and frontend both want to edit shared/contracts.js. Existing components and Node test runner are available. Give the concrete dispatch plan, editable paths, dependencies, acceptance checks, and completion condition. Do not implement or launch agents for this planning exercise.",
+      "expected_output": "A scoped team plan respecting three available worker slots, single active file ownership, contract handoffs, independent integrated verification, and no implementation.",
+      "files": [],
+      "assertions": [
+        "Names one active writer for public/app.js and hands copy text to that owner.",
+        "Names one active writer for shared/contracts.js and orders client/server contract work before dependent edits.",
+        "Schedules at most three concurrent workers and includes all needed specialist responsibilities without requiring five simultaneous workers.",
+        "Requires independent verification of the integrated API and rendered signup flow against observable criteria."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "stale-evidence",
+      "prompt": "We are finishing the signup flow. The frontend author reports APPROVED and says npm test passed on commit abc123. Since then backend changed the response body in an uncommitted patch and frontend changed its submit handler. A different reviewer has only run the type checker against that new tree. Required criteria include invalid-email feedback, keyboard submission, a persisted signup, and recovery after a 500 response. Browser tools are unavailable in this environment. The team says ship it because CI is green. As the orchestrator, give the current verdict, next dispatches, evidence that can be accepted, checks still needed, and the honest user-facing status. This is a decision exercise: do not claim to run tests or deploy anything.",
+      "expected_output": "Reject stale author approval, distinguish type checks from runtime evidence, bind reruns to uncommitted changes, and report missing required UI verification as blocked or incomplete.",
+      "files": [],
+      "assertions": [
+        "Rejects author APPROVED and old test output as acceptance of the current working tree.",
+        "Explains that type checking and green CI do not prove the required runtime/UI behavior.",
+        "Requires fresh checks tied to uncommitted changes and independently tests client/server integration.",
+        "Reports unavailable required browser checks as blocked or incomplete and does not authorize deployment."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "repair-and-resume",
+      "prompt": "Resume autonomous product work from a run note: the submit-error task has already used three repair rounds, two with no new evidence; the worker wants to rename it and try three more. A required browser check cannot run because the tool is missing. A backend unit test already failed before this feature. The saved note says all tasks done, but there are uncommitted changes and one live frontend worker still editing. There is no external-deployment authorization. Give the exact next actions, whether you continue or stop each work unit, the minimum handoff record, and the final status you can honestly claim. This is a decision exercise; do not modify files or launch agents.",
+      "expected_output": "Reconcile real state, preserve baseline failures, reject budget resets, handle unavailable checks honestly, settle live writers, and hand off unresolved work without deployment or success claims.",
+      "files": [],
+      "assertions": [
+        "Does not reset exhausted repair counts by renaming the task; diagnoses or hands off unresolved work.",
+        "Reconciles actual files and the live worker instead of trusting the all-done note.",
+        "Stops or settles the live writer before transferring ownership or accepting the final result.",
+        "Keeps the pre-existing failure visible and assesses its relevance rather than either assuming it is new or excusing all failures.",
+        "Preserves owners, evidence, blockers, next actions and used repair counts in the handoff; reports incomplete or blocked without deployment."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "criteria-drift-worker-replacement",
+      "prompt": "We are in the middle of an autonomous launch-form build. No code changed since the verifier passed the original acceptance checklist, but product has now changed success from displaying a thank-you to showing proof that the signup was durably stored. The old backend worker has been silent for a while; it still owns the route file and could have a write in flight. I want a replacement to finish the route and then close the task. Give your next dispatch and acceptance decision, including what remains trustworthy from earlier work. This is a decision exercise: do not launch workers, edit files, or claim to run checks.",
+      "expected_output": "Revises the acceptance contract, invalidates affected old approval despite unchanged code, stops or safely isolates the old writer before ownership transfer, preserves artifacts and repair history, and requires current independent evidence.",
+      "files": [],
+      "assertions": [
+        "Invalidates the affected old approval after the acceptance requirement changes despite unchanged code, and records the new criterion/revision.",
+        "Requires stopping or confirming the old worker cannot write before the replacement edits the same route; otherwise blocks or safely isolates it.",
+        "Carries current artifacts, decisions and used repair counts into the replacement brief rather than resetting the task.",
+        "Requires independent evidence of durable storage against the updated criterion before closing the task."
+      ]
+    }
+  ]
+}

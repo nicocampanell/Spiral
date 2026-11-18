@@ -1,0 +1,143 @@
+## Staged Pipeline (Canonical Team Runtime)
+
+Team execution follows a staged pipeline:
+
+`team-plan -> team-prd -> team-exec -> team-verify -> team-fix (loop)`
+
+### Stage Agent Routing
+
+Each pipeline stage uses **specialized agents** -- not just executors. The lead selects agents based on the stage and task characteristics.
+
+| Stage           | Required Agents                     | Optional Agents                                                                                         | Selection Criteria                                                                                                                                                                                |
+| --------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **team-plan**   | `explore` (haiku), `planner` (opus) | `analyst` (opus), `architect` (opus)                                                                    | Use `analyst` for unclear requirements. Use `architect` for systems with complex boundaries.                                                                                                      |
+| **team-prd**    | `analyst` (opus)                    | `critic` (opus)                                                                                         | Use `critic` to challenge scope.                                                                                                                                                                  |
+| **team-exec**   | `executor` (sonnet)                 | `executor` (opus), `debugger` (sonnet), `designer` (sonnet), `writer` (haiku), `test-engineer` (sonnet) | Match agent to subtask type. Use `executor` (model=opus) for complex autonomous work, `designer` for UI, `debugger` for compilation issues, `writer` for docs, `test-engineer` for test creation. |
+| **team-verify** | `verifier` (sonnet)                 | `test-engineer` (sonnet), `security-reviewer` (sonnet), `code-reviewer` (opus)                          | Always run `verifier`. Add `security-reviewer` for auth/crypto changes. Add `code-reviewer` for >20 files or architectural changes. `code-reviewer` also covers style/formatting checks.          |
+| **team-fix**    | `executor` (sonnet)                 | `debugger` (sonnet), `executor` (opus)                                                                  | Use `debugger` for type/build errors and regression isolation. Use `executor` (model=opus) for complex multi-file fixes.                                                                          |
+
+**Routing rules:**
+
+1. **The lead picks agents per stage, not the user.** The user's `N:agent-type` parameter only overrides the `team-exec` stage worker type. All other stages use stage-appropriate specialists.
+2. **Specialist agents complement executor agents.** Route analysis/review to architect/critic Claude agents and UI work to designer agents. Tmux CLI workers do not participate in Claude's native team messaging.
+3. **Cost mode affects model tier.** In downgrade: `opus` agents to `sonnet`, `sonnet` to `haiku` where quality permits. `team-verify` always uses at least `sonnet`.
+4. **Risk level escalates review.** Security-sensitive or >20 file changes must include `security-reviewer` + `code-reviewer` (opus) in `team-verify`.
+
+### Stage Entry/Exit Criteria
+
+- **team-plan**
+  - Entry: Team invocation is parsed and orchestration starts.
+  - Agents: `explore` scans codebase, `planner` creates task graph, optionally `analyst`/`architect` for complex tasks.
+  - Exit: decomposition is complete and a runnable task graph is prepared.
+- **team-prd**
+  - Entry: scope is ambiguous or acceptance criteria are missing.
+  - Agents: `analyst` extracts requirements, optionally `critic`.
+  - Exit: acceptance criteria and boundaries are explicit.
+- **team-exec**
+  - Entry: task list assignment and worker spawn are complete.
+  - Agents: workers spawned as the appropriate specialist type per subtask (see routing table).
+  - Exit: execution tasks reach terminal state for the current pass.
+- **team-verify**
+  - Entry: execution pass finishes.
+  - Agents: `verifier` + task-appropriate reviewers (see routing table).
+  - Exit (pass): verification gates pass with no required follow-up.
+  - Exit (fail): fix tasks are generated and control moves to `team-fix`.
+- **team-fix**
+  - Entry: verification found defects/regressions/incomplete criteria.
+  - Agents: `executor`/`debugger` depending on defect type.
+  - Exit: fixes are complete and flow returns to `team-exec` then `team-verify`.
+
+### Verify/Fix Loop and Stop Conditions
+
+Continue `team-exec -> team-verify -> team-fix` until:
+
+1. verification passes and no required fix tasks remain, or
+2. work reaches an explicit terminal blocked/failed outcome with evidence.
+
+`team-fix` is bounded by max attempts. If fix attempts exceed the configured limit, transition to terminal `failed` (no infinite loop).
+
+**Run closeout (either terminal outcome).** Before `/oh-my-claudecode:cancel` state cleanup, append at most three factual lines to `.omc/notepads/team/problems.md` (blockers additionally in `.omc/notepads/team/issues.md`) — what broke (defects that survived a fix round, three-strike halts) and what dragged (worker environment friction, missing checks, unreachable information). Preserve existing entries: append only and never replace the shared file. If there are no observations, append nothing; an empty closeout is valid, so do not write “no lessons.” Observations only; landing them on repo surfaces is `refit`'s job, with the user's approval. For a terminal `failed` outcome, also draft an incident work item with the failure signature, evidence pointers, and reopen path; append it to the local `.omc/notepads/team/issues.md`. Post it to a tracker only when the user or mode invocation explicitly authorizes that external action.
+
+### Stage Handoff Convention
+
+When transitioning between stages, important context — decisions made, alternatives rejected, risks identified — lives only in the lead's conversation history. If the lead's context compacts or agents restart, this knowledge is lost.
+
+**Each completing stage MUST produce a handoff document before transitioning.**
+
+The lead writes handoffs to `.omc/handoffs/<stage-name>.md`.
+
+#### Handoff Format
+
+```markdown
+## Handoff: <current-stage> → <next-stage>
+
+- **Decided**: [key decisions made in this stage]
+- **Rejected**: [alternatives considered and why they were rejected]
+- **Risks**: [identified risks for the next stage]
+- **Files**: [key files created or modified]
+- **Remaining**: [items left for the next stage to handle]
+```
+
+#### Handoff Rules
+
+1. **Lead reads previous handoff BEFORE spawning next stage's agents.** The handoff content is included in the next stage's agent spawn prompts, ensuring agents start with full context.
+2. **Handoffs accumulate.** The verify stage can read all prior handoffs (plan → prd → exec) for full decision history.
+3. **On team cancellation, handoffs survive** in `.omc/handoffs/` for session resume. They are not deleted by native Claude Code team cleanup; no `TeamDelete` call exists in Claude Code 2.1.178+.
+4. **Handoffs are lightweight.** 10-20 lines max. They capture decisions and rationale, not full specifications (those live in deliverable files like DESIGN.md).
+
+#### Example
+
+```markdown
+## Handoff: team-plan → team-exec
+
+- **Decided**: Microservice architecture with 3 services (auth, api, worker). PostgreSQL for persistence. JWT for auth tokens.
+- **Rejected**: Monolith (scaling concerns), MongoDB (team expertise is SQL), session cookies (API-first design).
+- **Risks**: Worker service needs Redis for job queue — not yet provisioned. Auth service has no rate limiting in initial design.
+- **Files**: DESIGN.md, TEST_STRATEGY.md
+- **Remaining**: Database migration scripts, CI/CD pipeline config, Redis provisioning.
+```
+
+### Resume and Cancel Semantics
+
+- **Resume:** restart from the last non-terminal stage using staged state + live task status. Read `.omc/handoffs/` to recover stage transition context.
+- **Cancel:** use the authoritative flow in
+  `skills/cancel/SKILL.md`; do not duplicate its flag, scope, or state-cleanup
+  rules here. Handoff files in `.omc/handoffs/` are preserved for resume.
+- Terminal states are `complete`, `failed`, and `cancelled`.
+
+
+[Intervening source omitted.]
+
+## Communication Patterns
+
+### Teammate to Lead (task completion report)
+
+```json
+{
+  "type": "message",
+  "recipient": "team-lead",
+  "content": "Completed task #1: Fixed 3 type errors in src/auth/login.ts and 2 in src/auth/session.ts. All files pass tsc --noEmit.",
+  "summary": "Task #1 complete"
+}
+```
+
+### Lead to Teammate (reassignment or guidance)
+
+```json
+{
+  "type": "message",
+  "recipient": "worker-2",
+  "content": "Task #3 is now unblocked. Also pick up task #5 which was originally assigned to worker-1.",
+  "summary": "New task assignment"
+}
+```
+
+### Broadcast (use sparingly -- sends N separate messages)
+
+```json
+{
+  "type": "broadcast",
+  "content": "STOP: shared types in src/types/index.ts have changed. Pull latest before continuing.",
+  "summary": "Shared types changed"
+}
+```

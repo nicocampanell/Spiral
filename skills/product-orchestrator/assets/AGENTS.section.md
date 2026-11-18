@@ -1,0 +1,21 @@
+<!-- product-orchestrator:start -->
+## Spiral product team
+
+For substantial product work or an explicit orchestration request, use the `product-orchestrator` skill at `~/.agents/skills/product-orchestrator/SKILL.md` and delegate useful independent tasks to the registered specialist agents below. Keep small, specific fixes lightweight.
+
+- Begin rough ideas by questioning the project owner about their product vision, challenging consequential assumptions and bringing relevant new sources/perspectives. Read the mapped project Notion page first so settled decisions are not repeatedly reopened.
+- For new interfaces or major redesigns, present 2–3 distinct directions and wait for the project owner to choose. Then build and verify the chosen scope autonomously, bringing them back for meaningful product changes and working milestones to review. Specific approved tickets and small corrections reuse the existing direction.
+- Give each project its own Notion home with nested documents for vision/scope, research/perspectives, design/decisions and delivery/verification, reusing equivalent existing documents. Keep confirmed decisions separate from proposals. The root lead alone writes canonical records through the local Composio CLI. Resolve an ambiguous home/account with the project owner; never invent sync success or create empty duplicate pages.
+- Aim the first build at a coherent, polished core flow that works end to end. Prefer smaller complete scope over feature breadth, with working milestone artifacts the project owner can inspect and test.
+- Use a stronger orchestrator and final reviewer with lighter focused builders. The registered roles have explicit model defaults; the skill documents availability checks and fallback. A role file cannot switch the current chat's model.
+- The lead coordinates all accessible assigned agents using native messaging/follow-up/wait tools, resolves contradictions, owns shared contracts and assigns one active writer per path. Specialists may clarify scoped facts with named peers; material decisions return to the lead. A delegated coordinator owns only its bounded workstream and proposes canonical-record changes to the root.
+- Preserve the product's own visual identity and use external visual references only when they suit the product. Reuse applicable installed design/motion skills.
+- Apply each role's craft floor: existing tokens first; otherwise 8-unit spacing with 4-unit steps and a restrained 2–3-family maximum budget (not a quota). Cover accessibility, actual content, relevant states and recovery. Builders favor complete idiomatic changes, meaningful tests and data integrity over speculative machinery. Product copy uses Humanizer-style clarity without losing facts, caveats, placeholders or voice. Use the skill's craft references and source map; contextual style defaults do not override a coherent approved system.
+- Require independent verification of the integrated artifact, current criteria revision and actual working changes. Relevant edits invalidate affected approval. Preserve failures, repair counts and handoffs; missing checks never count as passes.
+- For substantial backend work, follow the skill's architecture checkpoints. Trace the existing system, justify stack choices, review consequential designs before dependent edits, prove one end-to-end slice and verify the affected release and recovery paths. Keep local fixes to a focused trace and verification.
+- For uncertain consequential choices, compare independent proposals and combine compatible ideas. For substantial runs, reuse a project verification recipe, run the skill's evidence gate and carry tested project lessons into the next run. Apply shared skill and agent changes within the user's authorization.
+
+Registered roles: `product-orchestrator`, `product-strategist`, `web-designer`, `mobile-designer`, `product-copywriter`, `frontend-engineer`, `backend-engineer`, `product-verifier`.
+
+`web-designer` covers websites/web apps including responsive mobile web. `mobile-designer` covers native iOS/Android platform and device behavior. Select only the roles needed; do not spawn the full roster for every task. The current chat should lead when appropriately configured, avoiding redundant coordinator depth.
+<!-- product-orchestrator:end -->

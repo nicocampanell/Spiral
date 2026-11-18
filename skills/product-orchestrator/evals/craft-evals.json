@@ -1,0 +1,67 @@
+{
+  "skill_name": "product-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "name": "web-craft-handoff",
+      "role": "web-designer",
+      "prompt": "Prepare an implementable design handoff for a small web document editor's Save draft dialog. The product direction is already selected, so do not reopen discovery. There is no existing spacing/type system. We need a name field, folder selector, primary Save draft action, Cancel and useful feedback when saving fails. It must work on a phone browser and desktop with long document names and keyboard use. Specify the small visual system, relevant states and recovery, and what frontend/QA should check. There is no browser or screenshot in this exercise; do not claim visual or accessibility tests ran. Do not build UI or call external tools/services. Save your final handoff as output.md.",
+      "expected_output": "Concrete reusable spacing/type roles, restrained font choices, measurable accessibility with proper context, complete relevant states and recoverable failures, content resilience, honest unverified checks.",
+      "files": [],
+      "assertions": [
+        "Provides a concrete reusable spacing scale using 8-unit rhythm and useful 4-unit steps when no system exists.",
+        "Defines semantic type roles with a restrained family budget; does not add families just to meet a quota.",
+        "Specifies appropriate contrast, target and keyboard/focus/label checks without falsely claiming they ran.",
+        "Defines pending/error/retry/success behavior that preserves entered work and avoids duplicate effects.",
+        "Addresses real long content and responsive reflow in a concrete implementation handoff."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "native-preserve-system",
+      "role": "mobile-designer",
+      "prompt": "Review a scoped iOS photo-caption sheet for implementation. The existing app intentionally uses SF as its only family, Dynamic Type, a consistent 6/12/18/24pt spacing scale and native sheets. Preserve that identity. The sheet has caption input, Add photo, Save and Cancel. Describe the needed interaction/state/platform contract, including what a real device/simulator check would need. Do not redesign the app, propose font alternatives, or implement code. No rendered artifact is available, so label observation limits. Save your final contract as output.md.",
+      "expected_output": "Preserves existing single-family/6pt system, addresses native keyboard/safe-area/back/text scaling/permission and save recovery, distinguishes practical control targets and actual device evidence from source recommendations.",
+      "files": [],
+      "assertions": [
+        "Preserves the stated single SF family and coherent 6pt spacing system.",
+        "Treats 44pt iOS targets as a practical default rather than an unconditional universal minimum.",
+        "Covers relevant native keyboard/safe-area/navigation/text-scaling and recovery/accessibility behavior.",
+        "Distinguishes a proposed contract from actual simulator/device or accessibility evidence."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "humanizer-product-copy",
+      "role": "product-copywriter",
+      "prompt": "Rewrite the help paragraph and save-error copy for an understated document editor. Confirmed facts: drafts stay only in this browser until the person deletes them or clears browser storage; cloud sync is unavailable; an export can be at most 20 MB; beta opened November 17, 2026. The documentation target must remain https://example.test/help/export and the placeholder must remain {project_name}. Keep the inline code /api/save unchanged if used. Draft: 'Unlock a seamless creative journey with {project_name}. This isn't just a draft editor, it's a revolutionary way to capture, cultivate, and celebrate your ideas, ensuring your inspiration is never lost. Drafts are stored in this browser until deletion or clearing browser storage. Cloud sync is unavailable. Exports have a 20 MB limit. Beta opened November 17, 2026. Export help: https://example.test/help/export. The local endpoint is /api/save.' Error draft: 'Oops! Something went wrong, but your work is safe in the cloud. Let's try again!' The actual failure means the attempted draft was not saved; the person can keep editing and retry. Return only final help text and final error text, preserving factual limits and useful recovery. Do not add a sales claim, fabricated fact, analysis wrapper or external action. Save as output.md.",
+      "expected_output": "Clear natural product copy without unsupported marketing/sync claims; all supplied facts, date, size, URL, placeholder and endpoint intact; truthful failure and recovery without invented cause.",
+      "files": [],
+      "assertions": [
+        "Preserves browser-only storage/deletion limits, unavailable cloud sync, 20 MB and November 17, 2026.",
+        "Preserves {project_name} and exact documentation URL; if endpoint code is retained it remains /api/save.",
+        "Removes unsupported revolutionary/never-lost/cloud-safety promises rather than inventing claims.",
+        "Error truthfully says the attempted draft was not saved and offers keep-editing/retry without inventing a cause.",
+        "Returns final natural product copy without draft-analysis/chat wrappers or forced sales framing."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "safe-storage-migration",
+      "role": "backend-engineer",
+      "prompt": "Fix this small synchronous storage migration without dependencies. Original bug: it catches a failed setItem('settings:v2', oldValue) and then unconditionally removeItem('settings:v1'), losing the only copy. Write migrate.mjs exporting migrateLegacy(storage). The adapter has synchronous getItem/setItem/removeItem; getItem returns null only for an absent key and an empty string is a valid stored value. Preserve an existing settings:v2 value (even an empty string) and the old key in that case. Otherwise migrate settings:v1 unchanged, verify that reading v2 returns exactly the old value, and only then remove v1. Return true only if replacement is verified and removal succeeded; return false for absent legacy, existing v2, read/write/remove exceptions or failed verification. Never remove the old key after failed replacement or verification. Keep the export and exact keys, use only the passed adapter, and do not add framework/abstraction/dependency machinery. Save the ES module as migrate.mjs and a brief actual checks/limitations report as output.md. You may run small local checks. Do not inspect any external judge or other runs.",
+      "expected_output": "Small implementation preserving data and existing v2, correctly handling empty strings and failure paths, with truthful checks rather than swallowed write errors followed by deletion.",
+      "files": [],
+      "assertions": [
+        "successful replacement preserves exact data and removes legacy",
+        "empty legacy string is valid and migrates",
+        "absent legacy is unchanged",
+        "existing replacement including empty string takes priority",
+        "failed write preserves the only valid copy",
+        "unverified dropped or corrupt write never deletes legacy",
+        "read exceptions report failure without mutation",
+        "removal failure retains original and verified replacement"
+      ]
+    }
+  ]
+}

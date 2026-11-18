@@ -1,0 +1,31 @@
+# Design craft contract
+
+Apply relevant parts to the actual task. Preserve the brief, approved direction, existing design system and platform conventions. Accessibility, honest behavior and a complete user flow are acceptance concerns; spacing/type/motion values are starting defaults, not reasons to erase a coherent incumbent design. Read applicable installed design skills selectively: Impeccable, design-agent, better-layout/typography/colors/accessibility/writing, and platform-specific guidance. These floors remain usable when those skills are unavailable.
+
+## Establish the visual system
+
+- Inspect real screens, components, tokens, content, assets and font loading before adding styles. Name the primary action, information order, desired density and surface purpose. A working tool, a reading surface and a persuasive landing page need different emphasis.
+- Reuse the project's spacing scale. With no established scale, use an **8-unit layout rhythm with 4-unit intermediate steps**: 4, 8, 12, 16, 24, 32, 48, 64 logical units are a useful starting set. Use CSS px on web and platform pt/dp on native. Put shared values in existing tokens, not scattered magic numbers. Group-related spacing should be smaller than between-group spacing. Optical icon/baseline adjustments and platform geometry need not be multiples of eight.
+- Keep a **2–3-family maximum budget, not a font quota**. Default to one UI/body family, optionally a contrasting display family; a third needs a distinct function such as code. One well-chosen existing family is valid. Define semantic roles for display/headings/body/labels/metadata/data using a small size/weight/line-height scale. Do not add fonts simply to appear designed.
+- Start ordinary web body text near 1rem/16px, line height around 1.5 and prose measure around 45–75ch, then test the actual font/language/density. These are readability defaults, not WCAG minimum font sizes. Use native text roles and scaling on native platforms.
+- Use semantic surface/text/border/accent/focus/feedback colors. Limit competing emphasis, align edges/baselines, and make imagery, icon weight, radii and elevation consistent with the chosen concept. Every wrapper/card/border should communicate a relationship or affordance; no automatic card grids, decorative badges, generic gradients or filler illustration unrelated to the task. Keep an intentional treatment when the brief calls for it.
+
+## Complete the interaction
+
+- Specify applicable default, hover, focus, pressed/selected, disabled, pending/loading, empty, error and success states. Distinguish first use, no matches and failed loading. Permission, offline, interrupted and partial-success states belong where the feature actually encounters them; do not invent new systems to fill a checklist.
+- Give each state exact feedback, next action and ownership. Keep user input after a recoverable failure. Prevent accidental duplicate effects while a request is pending; handle retries, stale responses and optimistic rollback when applicable. A success message must reflect the actual operation's persistence/sync level.
+- Use native semantic controls and durable labels. Buttons perform actions, links navigate, forms submit. Preserve expected keyboard, paste, autofill, browser and platform behavior. Never use a placeholder as the sole field label or hide important content in an inaccessible tooltip.
+- Give error messages an accurate problem and a useful recovery action beside the affected control. Bind and announce errors/status using the platform's semantics. Make destructive actions explicit and reversible or confirm irreversible consequences where appropriate.
+- Design with real content: long names, translated strings, missing images, empty data, large numbers and narrow/short containers. Reflow by content, not device names. Avoid fixed text heights or hidden overflow that disguise layout failures. Keep important actions reachable under keyboards, overlays and system chrome.
+
+## Accessibility and platform checks
+
+- On web, measure actual rendered color pairs: normal text at least **4.5:1**, qualifying large text **3:1** under WCAG 2.2 AA, with the criterion's actual exceptions. Meaningful component boundaries/states follow the applicable non-text contrast criterion. No color-only status. Do not invent a ratio or treat an unmeasured mockup as a pass.
+- Web pointer targets meet **24×24 CSS px or an applicable WCAG 2.5.8 exception**; aim for roughly 44×44 CSS px for touch where feasible. Expanded hit areas cannot overlap. For native, use **44×44pt as the practical iOS default** and **48×48dp as Android's recommended touch target**; distinguish these defaults from formal minima and web CSS units.
+- Check core flows by keyboard, visible focus, logical reading/focus order, meaningful names/roles/state and correct dialog focus movement/restoration. Use appropriate autocomplete/inputmode; do not globally suppress autofill, paste, scrolling or zoom. Give gesture-only actions an accessible alternative.
+- Check text enlargement and content reflow. Ordinary vertical-flow web content should remain usable at 320 CSS px without two-dimensional scrolling, subject to necessary two-dimensional-content exceptions; test text resizing separately. Native needs system text scaling, screen readers, safe areas/IME insets and expected back/navigation behavior.
+- Keep motion purposeful, interruptible and coherent on rapid repeated input. Match the existing motion system, preserve information under reduced motion, and pause expensive offscreen loops. Do not enforce one spring, a universal 200 ms ceiling or a mandatory animation in every surface. Scope custom gesture handling to its surface rather than disabling page scrolling/zoom.
+
+## Evidence and handoff
+
+Deliver concrete tokens, component/state behavior, copy needs and responsive/device rules. Inspect the working rendered result across relevant states and sizes, not just the source or a beauty shot. Check keyboard and assistive-technology behavior separately from visual inspection. Automated checks support review; they do not prove complete accessibility or good visual hierarchy. Label measured failures, demonstrated usability defects, aesthetic preferences and unverified checks separately. Source provenance and conflict decisions: [craft sources](craft-sources.md).
